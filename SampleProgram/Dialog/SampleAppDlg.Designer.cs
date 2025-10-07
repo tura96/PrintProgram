@@ -8,7 +8,7 @@
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources begin used.
+        /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -37,16 +37,19 @@
             this.ExitButton = new System.Windows.Forms.Button();
             this.RequestsListBox = new System.Windows.Forms.ListBox();
             this.LabelPreviewPanel = new System.Windows.Forms.Panel();
-            this.PrintSourceComboBox = new System.Windows.Forms.ComboBox();
+            this._printSourceComboBox = new System.Windows.Forms.ComboBox();
+            this._urlTextBox = new System.Windows.Forms.TextBox();
+            this._fetchJsonButton = new System.Windows.Forms.Button();
+            this._clearRequestsButton = new System.Windows.Forms.Button();
+            this.AutoPrintCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Step2Button
             // 
             this.Step2Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step2Button.Location = new System.Drawing.Point(33, 118);
-            this.Step2Button.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Step2Button.Location = new System.Drawing.Point(22, 77);
             this.Step2Button.Name = "Step2Button";
-            this.Step2Button.Size = new System.Drawing.Size(600, 46);
+            this.Step2Button.Size = new System.Drawing.Size(400, 30);
             this.Step2Button.TabIndex = 0;
             this.Step2Button.Text = "Step.2 Add the media layout";
             this.Step2Button.UseVisualStyleBackColor = true;
@@ -56,8 +59,7 @@
             // 
             this.Step1Label.AutoSize = true;
             this.Step1Label.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step1Label.Location = new System.Drawing.Point(28, 15);
-            this.Step1Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Step1Label.Location = new System.Drawing.Point(19, 10);
             this.Step1Label.Name = "Step1Label";
             this.Step1Label.Size = new System.Drawing.Size(200, 16);
             this.Step1Label.TabIndex = 1;
@@ -68,20 +70,18 @@
             this.PrinterInfoComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.PrinterInfoComboBox.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.PrinterInfoComboBox.FormattingEnabled = true;
-            this.PrinterInfoComboBox.Location = new System.Drawing.Point(386, 46);
-            this.PrinterInfoComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.PrinterInfoComboBox.Location = new System.Drawing.Point(257, 30);
             this.PrinterInfoComboBox.Name = "PrinterInfoComboBox";
-            this.PrinterInfoComboBox.Size = new System.Drawing.Size(246, 21);
+            this.PrinterInfoComboBox.Size = new System.Drawing.Size(165, 21);
             this.PrinterInfoComboBox.TabIndex = 2;
             this.PrinterInfoComboBox.SelectedIndexChanged += new System.EventHandler(this.PrinterInfoComboBox_SelectedIndexChanged);
             // 
             // Step3Button
             // 
             this.Step3Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step3Button.Location = new System.Drawing.Point(33, 195);
-            this.Step3Button.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Step3Button.Location = new System.Drawing.Point(22, 127);
             this.Step3Button.Name = "Step3Button";
-            this.Step3Button.Size = new System.Drawing.Size(600, 46);
+            this.Step3Button.Size = new System.Drawing.Size(400, 30);
             this.Step3Button.TabIndex = 3;
             this.Step3Button.Text = "Step.3 Set the roll paper";
             this.Step3Button.UseVisualStyleBackColor = true;
@@ -90,10 +90,9 @@
             // Step4Button
             // 
             this.Step4Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step4Button.Location = new System.Drawing.Point(33, 272);
-            this.Step4Button.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Step4Button.Location = new System.Drawing.Point(22, 177);
             this.Step4Button.Name = "Step4Button";
-            this.Step4Button.Size = new System.Drawing.Size(600, 46);
+            this.Step4Button.Size = new System.Drawing.Size(400, 30);
             this.Step4Button.TabIndex = 4;
             this.Step4Button.Text = "Step.4 Change the print settings";
             this.Step4Button.UseVisualStyleBackColor = true;
@@ -102,10 +101,9 @@
             // Step5Button
             // 
             this.Step5Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step5Button.Location = new System.Drawing.Point(33, 351);
-            this.Step5Button.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Step5Button.Location = new System.Drawing.Point(22, 228);
             this.Step5Button.Name = "Step5Button";
-            this.Step5Button.Size = new System.Drawing.Size(600, 46);
+            this.Step5Button.Size = new System.Drawing.Size(400, 30);
             this.Step5Button.TabIndex = 5;
             this.Step5Button.Text = "Step.5 Printing...";
             this.Step5Button.UseVisualStyleBackColor = true;
@@ -114,10 +112,9 @@
             // ExitButton
             // 
             this.ExitButton.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ExitButton.Location = new System.Drawing.Point(464, 425);
-            this.ExitButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ExitButton.Location = new System.Drawing.Point(310, 478);
             this.ExitButton.Name = "ExitButton";
-            this.ExitButton.Size = new System.Drawing.Size(168, 52);
+            this.ExitButton.Size = new System.Drawing.Size(112, 34);
             this.ExitButton.TabIndex = 6;
             this.ExitButton.Text = "Exit";
             this.ExitButton.UseVisualStyleBackColor = true;
@@ -126,43 +123,86 @@
             // RequestsListBox
             // 
             this.RequestsListBox.FormattingEnabled = true;
-            this.RequestsListBox.ItemHeight = 20;
-            this.RequestsListBox.Location = new System.Drawing.Point(28, 500);
-            this.RequestsListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.RequestsListBox.Location = new System.Drawing.Point(22, 278);
             this.RequestsListBox.Name = "RequestsListBox";
-            this.RequestsListBox.Size = new System.Drawing.Size(298, 164);
+            this.RequestsListBox.Size = new System.Drawing.Size(200, 108);
             this.RequestsListBox.TabIndex = 7;
             this.RequestsListBox.SelectedIndexChanged += new System.EventHandler(this.RequestsListBox_SelectedIndexChanged);
             // 
             // LabelPreviewPanel
             // 
             this.LabelPreviewPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.LabelPreviewPanel.Location = new System.Drawing.Point(360, 500);
-            this.LabelPreviewPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.LabelPreviewPanel.Location = new System.Drawing.Point(240, 278);
             this.LabelPreviewPanel.Name = "LabelPreviewPanel";
-            this.LabelPreviewPanel.Size = new System.Drawing.Size(272, 165);
+            this.LabelPreviewPanel.Size = new System.Drawing.Size(182, 108);
             this.LabelPreviewPanel.TabIndex = 8;
+            this.LabelPreviewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LabelPreviewPanel_Paint);
             // 
-            // PrintSourceComboBox
+            // _printSourceComboBox
             // 
-            this.PrintSourceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.PrintSourceComboBox.FormattingEnabled = true;
-            this.PrintSourceComboBox.Items.AddRange(new object[] {
+            this._printSourceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._printSourceComboBox.FormattingEnabled = true;
+            this._printSourceComboBox.Items.AddRange(new object[] {
             "Sample Image",
-            "HTTP Request"});
-            this.PrintSourceComboBox.Location = new System.Drawing.Point(28, 438);
-            this.PrintSourceComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.PrintSourceComboBox.Name = "PrintSourceComboBox";
-            this.PrintSourceComboBox.Size = new System.Drawing.Size(298, 28);
-            this.PrintSourceComboBox.TabIndex = 9;
+            "HTTP Request",
+            "JSON Data"});
+            this._printSourceComboBox.Location = new System.Drawing.Point(22, 400);
+            this._printSourceComboBox.Name = "_printSourceComboBox";
+            this._printSourceComboBox.Size = new System.Drawing.Size(200, 21);
+            this._printSourceComboBox.TabIndex = 9;
+            this._printSourceComboBox.SelectedIndexChanged += new System.EventHandler(this.PrintSourceComboBox_SelectedIndexChanged);
+            // 
+            // _urlTextBox
+            // 
+            this._urlTextBox.ForeColor = System.Drawing.Color.Gray;
+            this._urlTextBox.Location = new System.Drawing.Point(22, 427);
+            this._urlTextBox.Name = "_urlTextBox";
+            this._urlTextBox.Size = new System.Drawing.Size(400, 20);
+            this._urlTextBox.TabIndex = 10;
+            this._urlTextBox.Text = "Enter JSON URL";
+            // 
+            // _fetchJsonButton
+            // 
+            this._fetchJsonButton.Location = new System.Drawing.Point(22, 453);
+            this._fetchJsonButton.Name = "_fetchJsonButton";
+            this._fetchJsonButton.Size = new System.Drawing.Size(80, 23);
+            this._fetchJsonButton.TabIndex = 11;
+            this._fetchJsonButton.Text = "Fetch JSON";
+            this._fetchJsonButton.UseVisualStyleBackColor = true;
+            this._fetchJsonButton.Click += new System.EventHandler(this.FetchJsonButton_Click);
+            // 
+            // _clearRequestsButton
+            // 
+            this._clearRequestsButton.Location = new System.Drawing.Point(110, 453);
+            this._clearRequestsButton.Name = "_clearRequestsButton";
+            this._clearRequestsButton.Size = new System.Drawing.Size(80, 23);
+            this._clearRequestsButton.TabIndex = 12;
+            this._clearRequestsButton.Text = "Clear List";
+            this._clearRequestsButton.UseVisualStyleBackColor = true;
+            this._clearRequestsButton.Click += new System.EventHandler(this.ClearRequestsButton_Click);
+            // 
+            // AutoPrintCheckBox
+            // 
+            this.AutoPrintCheckBox.AutoSize = true;
+            this.AutoPrintCheckBox.Location = new System.Drawing.Point(22, 489);
+            this.AutoPrintCheckBox.Name = "AutoPrintCheckBox";
+            this.AutoPrintCheckBox.Size = new System.Drawing.Size(162, 17);
+            this.AutoPrintCheckBox.TabIndex = 99;
+            this.AutoPrintCheckBox.Text = "Auto Print on HTTP Request";
+            this.AutoPrintCheckBox.UseVisualStyleBackColor = true;
+            this.AutoPrintCheckBox.CheckedChanged += new System.EventHandler(this.AutoPrintCheckBox_CheckedChanged);
             // 
             // SampleAppDlg
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(670, 694);
-            this.Controls.Add(this.PrintSourceComboBox);
+            this.ClientSize = new System.Drawing.Size(453, 524);
+            this.Controls.Add(this.AutoPrintCheckBox);
+            this.Controls.Add(this._clearRequestsButton);
+            this.Controls.Add(this._fetchJsonButton);
+            this.Controls.Add(this._urlTextBox);
+            this.Controls.Add(this._printSourceComboBox);
             this.Controls.Add(this.LabelPreviewPanel);
             this.Controls.Add(this.RequestsListBox);
             this.Controls.Add(this.ExitButton);
@@ -172,7 +212,6 @@
             this.Controls.Add(this.PrinterInfoComboBox);
             this.Controls.Add(this.Step1Label);
             this.Controls.Add(this.Step2Button);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "SampleAppDlg";
             this.Text = "Label printer sample program";
             this.Load += new System.EventHandler(this.SampleAppDlg_Load);
@@ -189,10 +228,13 @@
         private System.Windows.Forms.Button Step3Button;
         private System.Windows.Forms.Button Step4Button;
         private System.Windows.Forms.Button Step5Button;
-        private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.ListBox RequestsListBox;
         private System.Windows.Forms.Panel LabelPreviewPanel;
-        private System.Windows.Forms.ComboBox PrintSourceComboBox;
+        private System.Windows.Forms.Button ExitButton;
+        private System.Windows.Forms.ComboBox _printSourceComboBox;
+        private System.Windows.Forms.TextBox _urlTextBox;
+        private System.Windows.Forms.Button _fetchJsonButton;
+        private System.Windows.Forms.Button _clearRequestsButton;
+        private System.Windows.Forms.CheckBox AutoPrintCheckBox;
     }
 }
-

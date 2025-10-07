@@ -1,12 +1,17 @@
-﻿using System;
+﻿using QRCoder;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Drawing.Drawing2D;
-using System.IO;
-using QRCoder;
+using System.Windows.Forms;
+using System.Windows.Shapes;
+using Path = System.IO.Path;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace SampleProgram
 {
@@ -46,9 +51,9 @@ namespace SampleProgram
                     }
 
                     PD_PrintPage_DrawLogo(e);
-                    PD_PrintPage_DrawLabelFields(e); // <-- Draw label data fields
                     PD_PrintPage_DrawImage(e);
                     //PD_PrintPage_DrawBarcode(e);
+                    PD_PrintPage_DrawLabelFields(e); // <-- Draw label data fields
                     PD_PrintPage_DrawQRcode(e); // <-- Updated to draw QR code
                     PD_PrintPage_DrawPageCount(e);
                     PD_PrintPage_DrawRectangle(e);
@@ -128,6 +133,7 @@ namespace SampleProgram
                 // Use label data or default value
                 string strLogo = _labelData?.title ?? "Sneaker";
                 using (Font f = new Font("Arial", 45, FontStyle.Bold))
+                using (Font f2 = new Font("Arial", 15, FontStyle.Bold))
                 using (Pen p = new Pen(Color.White))
                 using (Brush b = new SolidBrush(Color.White))
                 {
@@ -136,6 +142,7 @@ namespace SampleProgram
 
                     // Draw string.
                     e.Graphics.DrawString(strLogo, f, Brushes.White, PD_GetCenterPosition(e.Graphics, strLogo, f, r));
+                    e.Graphics.DrawString($"Name: Savilla", f2, Brushes.Black, 5, 25);
                 }
             }
             catch (Exception)
@@ -148,20 +155,59 @@ namespace SampleProgram
         // Add this method to draw label fields
         private void PD_PrintPage_DrawLabelFields(PrintPageEventArgs e)
         {
-            if (_labelData?.fields == null || _labelData.fields.Count == 0)
-                return;
+            Debug.WriteLine($"[DEBUG] Starting PD_PrintPage_DrawLabelFields");
+            Debug.WriteLine($"[DEBUG] LabelData: {_labelData?.fields}");
+            Debug.WriteLine($"[DEBUG] LabelData is null: {_labelData == null}");
+            Debug.WriteLine($"[DEBUG] Fields is null: {_labelData?.fields == null}");
+            Debug.WriteLine($"[DEBUG] Fields count: {_labelData?.fields?.Count ?? 0}");
 
-            e.Graphics.PageUnit = GraphicsUnit.Millimeter;
-            int startY = 25; // Start below the logo
-            int lineHeight = 8;
-            using (Font f = new Font("Arial", 12))
+            if (_labelData?.fields == null || _labelData.fields.Count == 0)
             {
-                foreach (var field in _labelData.fields)
+                Debug.WriteLine($"[DEBUG] No fields to display - exiting early");
+                return;
+            }
+
+            try
+            {
+                e.Graphics.PageUnit = GraphicsUnit.Millimeter;
+                Debug.WriteLine($"[DEBUG] Graphics PageUnit set to: {e.Graphics.PageUnit}");
+
+                int startY = 73; // Start below the logo
+                int lineHeight = 10;
+
+                Debug.WriteLine($"[DEBUG] Starting Y position: {startY}");
+                Debug.WriteLine($"[DEBUG] Line height: {lineHeight}");
+
+                using (Font f = new Font("Arial", 12))
                 {
-                    string line = $"{field.name}: {field.value}";
-                    e.Graphics.DrawString(line, f, Brushes.Black, 5, startY);
-                    startY += lineHeight;
+                    Debug.WriteLine($"[DEBUG] Font created: {f.Name}, Size: {f.Size}, Style: {f.Style}");
+
+                    foreach (var field in _labelData.fields)
+                    {
+                        string line = $"{field.name}: {field.value}";
+                        Debug.WriteLine($"[DEBUG] Drawing line: '{line}' at position (5, {startY})");
+
+                        // Test if the field data is valid
+                        Debug.WriteLine($"[DEBUG] Field name: '{field.name}', value: '{field.value}'");
+                        Debug.WriteLine($"[DEBUG] Name is null/empty: {string.IsNullOrEmpty(field.name)}");
+                        Debug.WriteLine($"[DEBUG] Value is null/empty: {string.IsNullOrEmpty(field.value)}");
+
+                        e.Graphics.DrawString(line, f, Brushes.Black, 5, startY);
+
+                        // Test drawing a simple rectangle to verify graphics is working
+                        //e.Graphics.DrawRectangle(Pens.Red, 5, startY, 50, 5);
+
+                        startY += lineHeight;
+                        Debug.WriteLine($"[DEBUG] Next Y position: {startY}");
+                    }
                 }
+
+                Debug.WriteLine($"[DEBUG] Finished drawing all fields");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Exception in PD_PrintPage_DrawLabelFields: {ex.Message}");
+                Debug.WriteLine($"[ERROR] Stack trace: {ex.StackTrace}");
             }
         }
 
@@ -173,25 +219,71 @@ namespace SampleProgram
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 
                 // Set draw area.
-                Rectangle r = new Rectangle(0, 20, 100, 78);
+                Rectangle r = new Rectangle(0, 20, 90, 58);
 
                 // The image is saved in the same location as the SampleProgram.exe.
                 String currentDirectryPath = Directory.GetCurrentDirectory();
-                String imageFileName = "illust.tif";
-                //String imageFileName = "logo_header.tif";
-
+                //String imageFileName = "illust.tif";
+                String imageFileName = "logoheader.tif";
                 String imageFilePath = Path.Combine(currentDirectryPath, imageFileName);
 
-                using (FileStream fs = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
-                using (Image img = Image.FromStream(fs))
+                // DEBUG: Log the path being used
+                Debug.WriteLine($"[DEBUG] Current Directory: {currentDirectryPath}");
+                Debug.WriteLine($"[DEBUG] Image File Path: {imageFilePath}");
+
+                // DEBUG: Check if file exists
+                if (!File.Exists(imageFilePath))
                 {
-                    // Draw image.
-                    e.Graphics.DrawImage(img, 0, 20, 100, 78);
+                    Debug.WriteLine($"[ERROR] Image file not found at: {imageFilePath}");
+                    MessageBox.Show($"Image file not found!\n\nPath: {imageFilePath}\n\nCurrent Directory: {currentDirectryPath}",
+                                  "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageString.GetSystemError((int)MessageString.STATE_DRAWIMAGE_ERROR);
+                    return;
+                }
+
+                Debug.WriteLine("[DEBUG] File exists, attempting to load image...");
+
+                using (FileStream fs = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    Debug.WriteLine($"[DEBUG] FileStream opened successfully. Length: {fs.Length} bytes");
+
+                    using (Image img = Image.FromStream(fs))
+                    {
+                        Debug.WriteLine($"[DEBUG] Image loaded. Size: {img.Width}x{img.Height}, Format: {img.RawFormat}");
+
+                        // Draw image.
+                        e.Graphics.DrawImage(img, 0, 20, 80, 68);
+
+                        Debug.WriteLine("[DEBUG] Image drawn successfully");
+                    }
                 }
             }
-            catch (Exception)
+            catch (FileNotFoundException fnfEx)
             {
-                // Error handling.
+                Debug.WriteLine($"[ERROR] FileNotFoundException: {fnfEx.Message}");
+                MessageBox.Show($"Image file not found!\n\n{fnfEx.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageString.GetSystemError((int)MessageString.STATE_DRAWIMAGE_ERROR);
+            }
+            catch (UnauthorizedAccessException uaEx)
+            {
+                Debug.WriteLine($"[ERROR] UnauthorizedAccessException: {uaEx.Message}");
+                MessageBox.Show($"Access denied to image file!\n\n{uaEx.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageString.GetSystemError((int)MessageString.STATE_DRAWIMAGE_ERROR);
+            }
+            catch (OutOfMemoryException oomEx)
+            {
+                Debug.WriteLine($"[ERROR] OutOfMemoryException (Invalid image format): {oomEx.Message}");
+                MessageBox.Show($"Invalid image format or corrupted file!\n\n{oomEx.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageString.GetSystemError((int)MessageString.STATE_DRAWIMAGE_ERROR);
+            }
+            catch (Exception ex)
+            {
+                // General error handling with detailed information
+                Debug.WriteLine($"[ERROR] Exception Type: {ex.GetType().Name}");
+                Debug.WriteLine($"[ERROR] Message: {ex.Message}");
+                Debug.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+                MessageBox.Show($"Error loading/drawing image!\n\nType: {ex.GetType().Name}\nMessage: {ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 MessageString.GetSystemError((int)MessageString.STATE_DRAWIMAGE_ERROR);
             }
         }
@@ -263,8 +355,9 @@ namespace SampleProgram
                 {
                     // Draw QR code - centered in the barcode area
                     int qrSize = 40; // 40mm square
-                    int xPos = (100 - qrSize) / 2; // Center horizontally
-                    e.Graphics.DrawImage(qrCodeImage, xPos, 98, qrSize, qrSize);
+                    //int xPos = (100 - qrSize) / 2; // Center horizontally
+                    int xPos = (98 - qrSize); // Center horizontally
+                    e.Graphics.DrawImage(qrCodeImage, xPos, 70, qrSize, qrSize);
                 }
             }
             catch (Exception ex)
@@ -298,7 +391,7 @@ namespace SampleProgram
                 // Set page count.
                 _pageNumber++;
 
-                using (Font f = new Font("Arial", 20, GraphicsUnit.Point))
+                using (Font f = new Font("Arial", 12, GraphicsUnit.Point))
                 {
                     // Draw page count.
                     String strPageCount = String.Format("{0} / {1}", _pageNumber, _totalPrintPage);
@@ -326,7 +419,7 @@ namespace SampleProgram
 
                     // Draw rectangle.
                     e.Graphics.DrawRectangle(p, new Rectangle(0, 0, 100, 20));
-                    e.Graphics.DrawRectangle(p, new Rectangle(0, 20, 100, 78));
+                    e.Graphics.DrawRectangle(p, new Rectangle(0, 20, 100, 48));
                     //e.Graphics.DrawRectangle(p, new Rectangle(0, 98, 100, 20));
                     //e.Graphics.DrawRectangle(p, new Rectangle(0, 118, 100, 12));
                 }

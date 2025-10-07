@@ -268,12 +268,12 @@ namespace SampleProgram
             {
                 switch (state)
                 {
-                    case (STATE_ENS_DLL_NOT_FOUND):
-                        {
-                            strMessage = STR_ENS_DLL_NOT_FOUND;
-                            err = false;
-                            break;
-                        }
+                    //case (STATE_ENS_DLL_NOT_FOUND):
+                    //    {
+                    //        strMessage = STR_ENS_DLL_NOT_FOUND;
+                    //        err = false;
+                    //        break;
+                    //    }
                     case (STATE_DRIVER_NOT_FOUND):
                         {
                             strMessage = STR_DRIVER_NOT_FOUND;
