@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Shapes;
@@ -51,7 +52,8 @@ namespace SampleProgram
                     }
 
                     PD_PrintPage_DrawLogo(e);
-                    PD_PrintPage_DrawImage(e);
+                    //PD_PrintPage_DrawImage(e);
+                    PD_PrintPage_DrawImageFromUrl(e);
                     //PD_PrintPage_DrawBarcode(e);
                     PD_PrintPage_DrawLabelFields(e); // <-- Draw label data fields
                     PD_PrintPage_DrawQRcode(e); // <-- Updated to draw QR code
@@ -285,6 +287,107 @@ namespace SampleProgram
                 MessageBox.Show($"Error loading/drawing image!\n\nType: {ex.GetType().Name}\nMessage: {ex.Message}",
                               "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 MessageString.GetSystemError((int)MessageString.STATE_DRAWIMAGE_ERROR);
+            }
+        }
+
+        private void PD_PrintPage_DrawImageFromUrl(PrintPageEventArgs e)
+        {
+            try
+            {
+                // Check if image URL field exists and has value
+                if (_labelData?.fields == null)
+                {
+                    Debug.WriteLine("[DEBUG] No label data fields available");
+                    return;
+                }
+
+                // Find the image URL field - adjust field name as needed
+                var imageField = _labelData.fields.FirstOrDefault(f =>
+                    f.name?.ToLower() == "image" ||
+                    f.name?.ToLower() == "imageurl" ||
+                    f.name?.ToLower() == "logo");
+
+                if (imageField == null || string.IsNullOrEmpty(imageField.value))
+                {
+                    Debug.WriteLine("[DEBUG] No image URL field found or URL is empty");
+                    return;
+                }
+
+                string imageUrl = imageField.value;
+                Debug.WriteLine($"[DEBUG] Image URL: {imageUrl}");
+
+                // Set page unit
+                e.Graphics.PageUnit = GraphicsUnit.Millimeter;
+
+                // Set draw area - adjust coordinates as needed
+                int x = 0;
+                int y = 20;
+                int width = 80;
+                int height = 68;
+
+                Debug.WriteLine($"[DEBUG] Drawing image at position: ({x}, {y}), Size: {width}x{height}mm");
+
+                // Download and draw image
+                DrawImageFromUrl(e.Graphics, imageUrl, x, y, width, height);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Exception in PD_PrintPage_DrawImageFromUrl: {ex.Message}");
+                Debug.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+            }
+        }
+
+        private void DrawImageFromUrl(Graphics graphics, string imageUrl, int x, int y, int width, int height)
+        {
+            try
+            {
+                Debug.WriteLine($"[DEBUG] Starting image download from: {imageUrl}");
+
+                using (WebClient webClient = new WebClient())
+                {
+                    // Download image data
+                    byte[] imageData = webClient.DownloadData(imageUrl);
+                    Debug.WriteLine($"[DEBUG] Image downloaded successfully. Size: {imageData.Length} bytes");
+
+                    using (MemoryStream ms = new MemoryStream(imageData))
+                    {
+                        using (Image img = Image.FromStream(ms))
+                        {
+                            Debug.WriteLine($"[DEBUG] Image loaded. Original Size: {img.Width}x{img.Height}, Format: {img.RawFormat}");
+
+                            // Draw image
+                            graphics.DrawImage(img, x, y, width, height);
+                            Debug.WriteLine($"[DEBUG] Image drawn successfully at ({x}, {y})");
+                        }
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                Debug.WriteLine($"[ERROR] WebException: {webEx.Message}");
+                Debug.WriteLine($"[ERROR] Status: {webEx.Status}");
+                if (webEx.Response is HttpWebResponse httpResponse)
+                {
+                    Debug.WriteLine($"[ERROR] HTTP Status Code: {httpResponse.StatusCode}");
+                }
+            }
+            catch (NotSupportedException nsEx)
+            {
+                Debug.WriteLine($"[ERROR] NotSupportedException: {nsEx.Message}");
+                Debug.WriteLine("[ERROR] The URI may not be a valid HTTP/HTTPS URL");
+            }
+            catch (ArgumentException argEx)
+            {
+                Debug.WriteLine($"[ERROR] ArgumentException (invalid URL): {argEx.Message}");
+            }
+            catch (OutOfMemoryException oomEx)
+            {
+                Debug.WriteLine($"[ERROR] OutOfMemoryException (invalid image format): {oomEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Exception in DrawImageFromUrl: {ex.Message}");
+                Debug.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
             }
         }
 
