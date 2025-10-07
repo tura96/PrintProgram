@@ -26,6 +26,7 @@ namespace SampleProgram
         private bool _exceptionFlag = false;
         // Add a field for label data
         private LabelData _labelData;
+        private int _topOffset = 20; // Variable offset from top in millimeters
 
         #endregion
 
@@ -39,6 +40,7 @@ namespace SampleProgram
                 {
                     // Debug: Print label title and fields
                     Console.WriteLine($"[DEBUG] Label Title: {_labelData?.title}");
+                    Console.WriteLine($"[DEBUG] Top Offset: {_topOffset}mm");
                     if (_labelData?.fields != null)
                     {
                         foreach (var field in _labelData.fields)
@@ -51,9 +53,9 @@ namespace SampleProgram
                         Console.WriteLine("[DEBUG] No label fields.");
                     }
 
+                    PD_PrintPage_DrawImage(e);
                     PD_PrintPage_DrawLogo(e);
-                    //PD_PrintPage_DrawImage(e);
-                    PD_PrintPage_DrawImageFromUrl(e);
+                    //PD_PrintPage_DrawImageFromUrl(e);
                     //PD_PrintPage_DrawBarcode(e);
                     PD_PrintPage_DrawLabelFields(e); // <-- Draw label data fields
                     PD_PrintPage_DrawQRcode(e); // <-- Updated to draw QR code
@@ -79,8 +81,8 @@ namespace SampleProgram
 
         #region Methods
 
-        // Update constructor to accept label data
-        public Print(string devName, string portName, int totalPrintPage, LabelData labelData)
+        // Update constructor to accept label data and top offset
+        public Print(string devName, string portName, int totalPrintPage, LabelData labelData, int topOffset = 20)
         {
             try
             {
@@ -96,6 +98,9 @@ namespace SampleProgram
 
                 _totalPrintPage = totalPrintPage;
                 _labelData = labelData; // Initialize label data
+                _topOffset = topOffset; // Initialize top offset
+
+                Console.WriteLine($"[DEBUG] Print initialized with top offset: {_topOffset}mm");
 
                 return;
             }
@@ -104,6 +109,19 @@ namespace SampleProgram
                 // Error handling.
                 throw;
             }
+        }
+
+        // Method to update top offset after construction
+        public void SetTopOffset(int topOffset)
+        {
+            _topOffset = topOffset;
+            Console.WriteLine($"[DEBUG] Top offset updated to: {_topOffset}mm");
+        }
+
+        // Method to get current top offset
+        public int GetTopOffset()
+        {
+            return _topOffset;
         }
 
         public void DoPrinting()
@@ -130,8 +148,8 @@ namespace SampleProgram
             {
                 // Set page unit.
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
-                // Set draw area.
-                Rectangle r = new Rectangle(0, 0, 100, 20);
+                // Set draw area with top offset
+                Rectangle r = new Rectangle(0, _topOffset, 100, 20);
                 // Use label data or default value
                 string strLogo = _labelData?.title ?? "Sneaker";
                 using (Font f = new Font("Arial", 45, FontStyle.Bold))
@@ -144,7 +162,6 @@ namespace SampleProgram
 
                     // Draw string.
                     e.Graphics.DrawString(strLogo, f, Brushes.White, PD_GetCenterPosition(e.Graphics, strLogo, f, r));
-                    e.Graphics.DrawString($"Name: Savilla", f2, Brushes.Black, 5, 25);
                 }
             }
             catch (Exception)
@@ -162,6 +179,7 @@ namespace SampleProgram
             Debug.WriteLine($"[DEBUG] LabelData is null: {_labelData == null}");
             Debug.WriteLine($"[DEBUG] Fields is null: {_labelData?.fields == null}");
             Debug.WriteLine($"[DEBUG] Fields count: {_labelData?.fields?.Count ?? 0}");
+            Debug.WriteLine($"[DEBUG] Top Offset: {_topOffset}mm");
 
             if (_labelData?.fields == null || _labelData.fields.Count == 0)
             {
@@ -174,7 +192,7 @@ namespace SampleProgram
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
                 Debug.WriteLine($"[DEBUG] Graphics PageUnit set to: {e.Graphics.PageUnit}");
 
-                int startY = 73; // Start below the logo
+                int startY = 73 + _topOffset; // Start below the logo with offset
                 int lineHeight = 10;
 
                 Debug.WriteLine($"[DEBUG] Starting Y position: {startY}");
@@ -194,7 +212,7 @@ namespace SampleProgram
                         Debug.WriteLine($"[DEBUG] Name is null/empty: {string.IsNullOrEmpty(field.name)}");
                         Debug.WriteLine($"[DEBUG] Value is null/empty: {string.IsNullOrEmpty(field.value)}");
 
-                        e.Graphics.DrawString(line, f, Brushes.Black, 5, startY);
+                        e.Graphics.DrawString(line, f, Brushes.Black, 0, startY);
 
                         // Test drawing a simple rectangle to verify graphics is working
                         //e.Graphics.DrawRectangle(Pens.Red, 5, startY, 50, 5);
@@ -220,18 +238,15 @@ namespace SampleProgram
                 // Set page unit.
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 
-                // Set draw area.
-                Rectangle r = new Rectangle(0, 20, 90, 58);
-
                 // The image is saved in the same location as the SampleProgram.exe.
                 String currentDirectryPath = Directory.GetCurrentDirectory();
-                //String imageFileName = "illust.tif";
                 String imageFileName = "logoheader.tif";
                 String imageFilePath = Path.Combine(currentDirectryPath, imageFileName);
 
                 // DEBUG: Log the path being used
                 Debug.WriteLine($"[DEBUG] Current Directory: {currentDirectryPath}");
                 Debug.WriteLine($"[DEBUG] Image File Path: {imageFilePath}");
+                Debug.WriteLine($"[DEBUG] Top Offset: {_topOffset}mm");
 
                 // DEBUG: Check if file exists
                 if (!File.Exists(imageFilePath))
@@ -253,8 +268,8 @@ namespace SampleProgram
                     {
                         Debug.WriteLine($"[DEBUG] Image loaded. Size: {img.Width}x{img.Height}, Format: {img.RawFormat}");
 
-                        // Draw image.
-                        e.Graphics.DrawImage(img, 0, 20, 80, 68);
+                        // Draw image with top offset
+                        e.Graphics.DrawImage(img, 10, 10 + _topOffset, 70, 64);
 
                         Debug.WriteLine("[DEBUG] Image drawn successfully");
                     }
@@ -315,13 +330,14 @@ namespace SampleProgram
 
                 string imageUrl = imageField.value;
                 Debug.WriteLine($"[DEBUG] Image URL: {imageUrl}");
+                Debug.WriteLine($"[DEBUG] Top Offset: {_topOffset}mm");
 
                 // Set page unit
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 
-                // Set draw area - adjust coordinates as needed
+                // Set draw area - adjust coordinates as needed with top offset
                 int x = 0;
-                int y = 20;
+                int y = 20 + _topOffset;
                 int width = 80;
                 int height = 68;
 
@@ -395,17 +411,17 @@ namespace SampleProgram
         {
             try
             {
-                 // Set page unit.
+                // Set page unit.
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 
-                // Set draw area.
-                Rectangle r = new Rectangle(0, 98, 100, 20);
+                // Set draw area with top offset.
+                Rectangle r = new Rectangle(0, 98 + _topOffset, 100, 20);
 
                 // Select the barcode font that set in the printer driver.
                 using (Font f = new Font("Courier New", 57))
                 {
                     // Draw string.Fixed value of 20mm from the left edge.
-                    e.Graphics.DrawString("*123456*", f, Brushes.Black, 20, 100);
+                    e.Graphics.DrawString("*123456*", f, Brushes.Black, 20, 100 + _topOffset);
                 }
             }
             catch (Exception)
@@ -414,6 +430,7 @@ namespace SampleProgram
                 throw;
             }
         }
+
         // Add this helper method to generate QR code bitmap
         private Bitmap GenerateQRCodedev(string data, int pixelsPerModule = 20)
         {
@@ -436,6 +453,7 @@ namespace SampleProgram
                 // Get data for QR code (use label data or default)
                 string qrData = "123456"; // Default
                 Console.WriteLine("[DEBUG] Preparing to generate QR code: ", _labelData.fields);
+                Console.WriteLine($"[DEBUG] Top Offset: {_topOffset}mm");
 
                 if (_labelData?.fields != null)
                 {
@@ -456,11 +474,11 @@ namespace SampleProgram
                 // Generate QR code
                 using (Bitmap qrCodeImage = GenerateQRCodedev(qrData, 10))
                 {
-                    // Draw QR code - centered in the barcode area
-                    int qrSize = 40; // 40mm square
-                    //int xPos = (100 - qrSize) / 2; // Center horizontally
-                    int xPos = (98 - qrSize); // Center horizontally
-                    e.Graphics.DrawImage(qrCodeImage, xPos, 70, qrSize, qrSize);
+                    // Draw QR code - centered in the barcode area with top offset
+                    int qrSize = 30; // 30mm square
+                    int xPos = 55; // Center horizontally
+                    int yPos = 70 + _topOffset; // Apply top offset
+                    e.Graphics.DrawImage(qrCodeImage, xPos, yPos, qrSize, qrSize);
                 }
             }
             catch (Exception ex)
@@ -471,7 +489,7 @@ namespace SampleProgram
                 // Fallback to text if QR code fails
                 using (Font f = new Font("Courier New", 20))
                 {
-                    e.Graphics.DrawString("QR Error", f, Brushes.Black, 20, 100);
+                    e.Graphics.DrawString("QR Error", f, Brushes.Black, 20, 100 + _topOffset);
                 }
             }
         }
@@ -488,8 +506,8 @@ namespace SampleProgram
                 // Set page unit.
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 
-                // Set draw area.
-                Rectangle r = new Rectangle(0, 118, 100, 12);
+                // Set draw area with top offset.
+                Rectangle r = new Rectangle(0, 118 + _topOffset, 100, 12);
 
                 // Set page count.
                 _pageNumber++;
@@ -520,11 +538,11 @@ namespace SampleProgram
                     // Set pen width.
                     p.Width = 1;
 
-                    // Draw rectangle.
-                    e.Graphics.DrawRectangle(p, new Rectangle(0, 0, 100, 20));
-                    e.Graphics.DrawRectangle(p, new Rectangle(0, 20, 100, 48));
-                    //e.Graphics.DrawRectangle(p, new Rectangle(0, 98, 100, 20));
-                    //e.Graphics.DrawRectangle(p, new Rectangle(0, 118, 100, 12));
+                    // Draw rectangle with top offset.
+                    e.Graphics.DrawRectangle(p, new Rectangle(0, _topOffset, 100, 20));
+                    e.Graphics.DrawRectangle(p, new Rectangle(0, 20 + _topOffset, 100, 48));
+                    //e.Graphics.DrawRectangle(p, new Rectangle(0, 98 + _topOffset, 100, 20));
+                    //e.Graphics.DrawRectangle(p, new Rectangle(0, 118 + _topOffset, 100, 12));
                 }
             }
             catch (Exception)
