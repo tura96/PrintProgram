@@ -200,7 +200,7 @@ namespace SampleProgram
 
                 using (Font f = new Font("Arial", 12))
                 {
-                    Debug.WriteLine($"[DEBUG] Font created: {f.Name}, Size: {f.Size}, Style: {f.Style}");
+                    //Debug.WriteLine($"[DEBUG] Font created: {f.Name}, Size: {f.Size}, Style: {f.Style}");
 
                     foreach (var field in _labelData.fields)
                     {
@@ -208,9 +208,9 @@ namespace SampleProgram
                         Debug.WriteLine($"[DEBUG] Drawing line: '{line}' at position (5, {startY})");
 
                         // Test if the field data is valid
-                        Debug.WriteLine($"[DEBUG] Field name: '{field.name}', value: '{field.value}'");
-                        Debug.WriteLine($"[DEBUG] Name is null/empty: {string.IsNullOrEmpty(field.name)}");
-                        Debug.WriteLine($"[DEBUG] Value is null/empty: {string.IsNullOrEmpty(field.value)}");
+                        //Debug.WriteLine($"[DEBUG] Field name: '{field.name}', value: '{field.value}'");
+                        //Debug.WriteLine($"[DEBUG] Name is null/empty: {string.IsNullOrEmpty(field.name)}");
+                        //Debug.WriteLine($"[DEBUG] Value is null/empty: {string.IsNullOrEmpty(field.value)}");
 
                         e.Graphics.DrawString(line, f, Brushes.Black, 0, startY);
 

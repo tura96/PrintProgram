@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
@@ -46,6 +46,12 @@ namespace SampleProgram
                 {
                     var context = _listener.GetContext();
                     string data = string.Empty;
+                    var response = context.Response;
+
+                    // ✅ ADD CORS HEADERS HERE
+                    response.AddHeader("Access-Control-Allow-Origin", "*");
+                    response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                    response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
 
                     System.Diagnostics.Debug.WriteLine($"Request Method: {context.Request.HttpMethod}");
                     System.Diagnostics.Debug.WriteLine($"Content Type: {context.Request.ContentType}");

@@ -47,7 +47,7 @@
             // Step2Button
             // 
             this.Step2Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step2Button.Location = new System.Drawing.Point(22, 77);
+            this.Step2Button.Location = new System.Drawing.Point(22, 44);
             this.Step2Button.Name = "Step2Button";
             this.Step2Button.Size = new System.Drawing.Size(400, 30);
             this.Step2Button.TabIndex = 0;
@@ -59,7 +59,7 @@
             // 
             this.Step1Label.AutoSize = true;
             this.Step1Label.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step1Label.Location = new System.Drawing.Point(19, 10);
+            this.Step1Label.Location = new System.Drawing.Point(22, 17);
             this.Step1Label.Name = "Step1Label";
             this.Step1Label.Size = new System.Drawing.Size(200, 16);
             this.Step1Label.TabIndex = 1;
@@ -70,16 +70,16 @@
             this.PrinterInfoComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.PrinterInfoComboBox.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.PrinterInfoComboBox.FormattingEnabled = true;
-            this.PrinterInfoComboBox.Location = new System.Drawing.Point(257, 30);
+            this.PrinterInfoComboBox.Location = new System.Drawing.Point(237, 17);
             this.PrinterInfoComboBox.Name = "PrinterInfoComboBox";
-            this.PrinterInfoComboBox.Size = new System.Drawing.Size(165, 21);
+            this.PrinterInfoComboBox.Size = new System.Drawing.Size(185, 21);
             this.PrinterInfoComboBox.TabIndex = 2;
             this.PrinterInfoComboBox.SelectedIndexChanged += new System.EventHandler(this.PrinterInfoComboBox_SelectedIndexChanged);
             // 
             // Step3Button
             // 
             this.Step3Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step3Button.Location = new System.Drawing.Point(22, 127);
+            this.Step3Button.Location = new System.Drawing.Point(22, 80);
             this.Step3Button.Name = "Step3Button";
             this.Step3Button.Size = new System.Drawing.Size(400, 30);
             this.Step3Button.TabIndex = 3;
@@ -90,7 +90,7 @@
             // Step4Button
             // 
             this.Step4Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step4Button.Location = new System.Drawing.Point(22, 177);
+            this.Step4Button.Location = new System.Drawing.Point(22, 116);
             this.Step4Button.Name = "Step4Button";
             this.Step4Button.Size = new System.Drawing.Size(400, 30);
             this.Step4Button.TabIndex = 4;
@@ -101,7 +101,7 @@
             // Step5Button
             // 
             this.Step5Button.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Step5Button.Location = new System.Drawing.Point(22, 228);
+            this.Step5Button.Location = new System.Drawing.Point(22, 152);
             this.Step5Button.Name = "Step5Button";
             this.Step5Button.Size = new System.Drawing.Size(400, 30);
             this.Step5Button.TabIndex = 5;
@@ -123,17 +123,17 @@
             // RequestsListBox
             // 
             this.RequestsListBox.FormattingEnabled = true;
-            this.RequestsListBox.Location = new System.Drawing.Point(22, 278);
+            this.RequestsListBox.Location = new System.Drawing.Point(22, 188);
             this.RequestsListBox.Name = "RequestsListBox";
-            this.RequestsListBox.Size = new System.Drawing.Size(139, 108);
+            this.RequestsListBox.Size = new System.Drawing.Size(400, 43);
             this.RequestsListBox.TabIndex = 7;
             this.RequestsListBox.SelectedIndexChanged += new System.EventHandler(this.RequestsListBox_SelectedIndexChanged);
             // 
             // LabelPreviewPanel
             // 
-            this.LabelPreviewPanel.Location = new System.Drawing.Point(167, 278);
+            this.LabelPreviewPanel.Location = new System.Drawing.Point(22, 250);
             this.LabelPreviewPanel.Name = "LabelPreviewPanel";
-            this.LabelPreviewPanel.Size = new System.Drawing.Size(255, 108);
+            this.LabelPreviewPanel.Size = new System.Drawing.Size(400, 136);
             this.LabelPreviewPanel.TabIndex = 100;
             this.LabelPreviewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LabelPreviewPanel_Paint);
             // 
@@ -147,7 +147,7 @@
             "JSON Data"});
             this._printSourceComboBox.Location = new System.Drawing.Point(22, 400);
             this._printSourceComboBox.Name = "_printSourceComboBox";
-            this._printSourceComboBox.Size = new System.Drawing.Size(200, 21);
+            this._printSourceComboBox.Size = new System.Drawing.Size(400, 21);
             this._printSourceComboBox.TabIndex = 9;
             this._printSourceComboBox.SelectedIndexChanged += new System.EventHandler(this.PrintSourceComboBox_SelectedIndexChanged);
             // 
