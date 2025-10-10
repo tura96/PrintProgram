@@ -125,17 +125,16 @@
             this.RequestsListBox.FormattingEnabled = true;
             this.RequestsListBox.Location = new System.Drawing.Point(22, 278);
             this.RequestsListBox.Name = "RequestsListBox";
-            this.RequestsListBox.Size = new System.Drawing.Size(200, 108);
+            this.RequestsListBox.Size = new System.Drawing.Size(139, 108);
             this.RequestsListBox.TabIndex = 7;
             this.RequestsListBox.SelectedIndexChanged += new System.EventHandler(this.RequestsListBox_SelectedIndexChanged);
             // 
             // LabelPreviewPanel
             // 
-            this.LabelPreviewPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.LabelPreviewPanel.Location = new System.Drawing.Point(240, 278);
+            this.LabelPreviewPanel.Location = new System.Drawing.Point(167, 278);
             this.LabelPreviewPanel.Name = "LabelPreviewPanel";
-            this.LabelPreviewPanel.Size = new System.Drawing.Size(182, 108);
-            this.LabelPreviewPanel.TabIndex = 8;
+            this.LabelPreviewPanel.Size = new System.Drawing.Size(255, 108);
+            this.LabelPreviewPanel.TabIndex = 100;
             this.LabelPreviewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LabelPreviewPanel_Paint);
             // 
             // _printSourceComboBox
@@ -184,6 +183,8 @@
             // AutoPrintCheckBox
             // 
             this.AutoPrintCheckBox.AutoSize = true;
+            this.AutoPrintCheckBox.Checked = true;
+            this.AutoPrintCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AutoPrintCheckBox.Location = new System.Drawing.Point(22, 489);
             this.AutoPrintCheckBox.Name = "AutoPrintCheckBox";
             this.AutoPrintCheckBox.Size = new System.Drawing.Size(162, 17);

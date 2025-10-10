@@ -158,7 +158,7 @@ namespace SampleProgram
                 using (Brush b = new SolidBrush(Color.White))
                 {
                     // Fill background color.
-                    e.Graphics.FillRectangle(Brushes.Red, r);
+                    e.Graphics.FillRectangle(Brushes.Blue, r);
 
                     // Draw string.
                     e.Graphics.DrawString(strLogo, f, Brushes.White, PD_GetCenterPosition(e.Graphics, strLogo, f, r));

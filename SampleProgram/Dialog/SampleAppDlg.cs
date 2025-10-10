@@ -157,6 +157,7 @@ namespace SampleProgram
                 if (_autoPrintEnabled)
                 {
                     Debug.WriteLine("Auto-print is enabled, triggering automatic print...");
+                    PreviewLabel(e.RequestData);
                     AutoPrintFromHttpRequest();
                 }
             }));
@@ -438,6 +439,7 @@ namespace SampleProgram
         {
             pe.Graphics.Clear(Color.White);
             string source = _printSourceComboBox.SelectedItem?.ToString();
+            Debug.WriteLine($"Start LabelPreviewPanel_Paint: {source}");
 
             if (source == "Sample Image")
             {
@@ -1141,10 +1143,26 @@ namespace SampleProgram
                         DisplayLabelPreview(singleLabel, 1);
                     }
                 }
+                // Handle URL-encoded query string (e.g., title=STVN2025&content=Product...)
+                else if (trimmedJson.Contains("="))
+                {
+                    var label = ParseLabelFromQueryString(trimmedJson);
+                    if (label != null)
+                        DisplayLabelPreview(label, 1);
+                }
+                else
+                {
+
+                    var singleLabel = JsonConvert.DeserializeObject<LabelData>(json);
+                    System.Diagnostics.Debug.WriteLine($"Preview data error : {json}");
+                    DisplayLabelPreview(singleLabel, 1);
+                }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Preview error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Preview data error : {json}");
+
             }
         }
 
@@ -1153,9 +1171,6 @@ namespace SampleProgram
         /// </summary>
         private void DisplayLabelPreview(LabelData label, int totalCount)
         {
-            // Assuming you have preview controls in your form
-            // Update these based on your actual UI controls
-
             StringBuilder previewText = new StringBuilder();
 
             if (totalCount > 1)
@@ -1165,7 +1180,7 @@ namespace SampleProgram
             }
 
             previewText.AppendLine($"Title: {label.title}");
-            previewText.AppendLine();
+            //previewText.AppendLine();
 
             if (label.fields != null && label.fields.Count > 0)
             {
@@ -1178,16 +1193,36 @@ namespace SampleProgram
 
             if (!string.IsNullOrEmpty(label.qrcode))
             {
-                previewText.AppendLine();
                 previewText.AppendLine($"QR Code: {label.qrcode}");
             }
 
-            // Update your preview control (e.g., TextBox, RichTextBox, or Label)
-            // Example: _previewTextBox.Text = previewText.ToString();
+            string finalPreview = previewText.ToString();
 
-            System.Diagnostics.Debug.WriteLine("Label Preview:");
-            System.Diagnostics.Debug.WriteLine(previewText.ToString());
+            // ✅ Clear any old content in the panel
+            LabelPreviewPanel.Controls.Clear();
+
+            // ✅ Create a label to hold the preview text
+            Label previewLabel = new Label
+            {
+                AutoSize = false,
+                Dock = DockStyle.Fill,
+                Font = new Font("Consolas", 8),
+                Text = finalPreview,
+                TextAlign = ContentAlignment.TopLeft,
+                Padding = new Padding(2),
+                AutoEllipsis = true
+            };
+
+            // ✅ Optional: make it scrollable if long text
+            LabelPreviewPanel.AutoScroll = true;
+
+            // ✅ Add the label to the panel
+            LabelPreviewPanel.Controls.Add(previewLabel);
+
+            // Debug log
+            System.Diagnostics.Debug.WriteLine(finalPreview);
         }
+
 
         /// <summary>
         /// This is the event handler that implement ClearRequestsButton action.
@@ -1207,7 +1242,52 @@ namespace SampleProgram
         {
 
         }
+
+        private LabelData ParseLabelFromQueryString(string query)
+        {
+            try
+            {
+                var label = new LabelData();
+                var fields = new List<Field>();
+                var pairs = query.Split('&');
+
+                foreach (var pair in pairs)
+                {
+                    var kv = pair.Split('=');
+                    if (kv.Length != 2) continue;
+
+                    string key = Uri.UnescapeDataString(kv[0]);
+                    string value = Uri.UnescapeDataString(kv[1]);
+
+                    switch (key.ToLower())
+                    {
+                        case "title":
+                            label.title = value;
+                            break;
+                        case "qrcode":
+                            label.qrcode = value;
+                            break;
+                        default:
+                            fields.Add(new Field { name = key, value = value });
+                            break;
+                    }
+                }
+
+                label.fields = fields;
+                return label;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Query parse error: {ex.Message}");
+                return null;
+            }
+        }
+
+
+
     }
+
+
 
     /// <summary>
     /// Data model for JSON label data
