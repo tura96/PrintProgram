@@ -24,7 +24,6 @@ namespace SampleProgram
         private int _pageNumber = 0;
         private int _totalPrintPage = 0;
         private bool _exceptionFlag = false;
-        // Add a field for label data
         private LabelData _labelData;
         private int _topOffset = 20; // Variable offset from top in millimeters
 
@@ -53,9 +52,9 @@ namespace SampleProgram
                         Console.WriteLine("[DEBUG] No label fields.");
                     }
 
-                    PD_PrintPage_DrawImage(e);
+                    //PD_PrintPage_DrawImage(e);
+                    PD_PrintPage_DrawImageFromUrl(e);
                     PD_PrintPage_DrawLogo(e);
-                    //PD_PrintPage_DrawImageFromUrl(e);
                     //PD_PrintPage_DrawBarcode(e);
                     PD_PrintPage_DrawLabelFields(e); // <-- Draw label data fields
                     PD_PrintPage_DrawQRcode(e); // <-- Updated to draw QR code
@@ -94,7 +93,8 @@ namespace SampleProgram
 
                 // Set the using Printer.
                 _pdPrint.PrinterSettings.PrinterName = devName;
-                _pdPrint.DocumentName = "STVN Test Print";
+                //_pdPrint.DocumentName = labelData.title ?? "STVN Test Print";
+                _pdPrint.DocumentName = labelData.title + " " + (labelData.fields?.FirstOrDefault(f => f.name == "ID")?.value ?? "STVN Test Print");
 
                 _totalPrintPage = totalPrintPage;
                 _labelData = labelData; // Initialize label data
@@ -193,7 +193,7 @@ namespace SampleProgram
                 Debug.WriteLine($"[DEBUG] Graphics PageUnit set to: {e.Graphics.PageUnit}");
 
                 int startY = 73 + _topOffset; // Start below the logo with offset
-                int lineHeight = 10;
+                int lineHeight = 6;
 
                 Debug.WriteLine($"[DEBUG] Starting Y position: {startY}");
                 Debug.WriteLine($"[DEBUG] Line height: {lineHeight}");
@@ -202,23 +202,27 @@ namespace SampleProgram
                 {
                     //Debug.WriteLine($"[DEBUG] Font created: {f.Name}, Size: {f.Size}, Style: {f.Style}");
 
-                    foreach (var field in _labelData.fields)
+                    //foreach (var field in _labelData.fields)
+                    //{
+                    //    string line = $"{field.name}: {field.value}";
+                    //    Debug.WriteLine($"[DEBUG] Drawing line: '{line}' at position (5, {startY})");
+
+                    //    e.Graphics.DrawString(line, f, Brushes.Black, 0, startY);
+
+                    //    // Test drawing a simple rectangle to verify graphics is working
+                    //    //e.Graphics.DrawRectangle(Pens.Red, 5, startY, 50, 5);
+
+                    //    startY += lineHeight;
+                    //    Debug.WriteLine($"[DEBUG] Next Y position: {startY}");
+                    //}
+                    int fieldCount = Math.Min(3, _labelData.fields.Count);
+                    for (int i = 0; i < fieldCount; i++)
                     {
+                        var field = _labelData.fields[i];
                         string line = $"{field.name}: {field.value}";
                         Debug.WriteLine($"[DEBUG] Drawing line: '{line}' at position (5, {startY})");
-
-                        // Test if the field data is valid
-                        //Debug.WriteLine($"[DEBUG] Field name: '{field.name}', value: '{field.value}'");
-                        //Debug.WriteLine($"[DEBUG] Name is null/empty: {string.IsNullOrEmpty(field.name)}");
-                        //Debug.WriteLine($"[DEBUG] Value is null/empty: {string.IsNullOrEmpty(field.value)}");
-
                         e.Graphics.DrawString(line, f, Brushes.Black, 0, startY);
-
-                        // Test drawing a simple rectangle to verify graphics is working
-                        //e.Graphics.DrawRectangle(Pens.Red, 5, startY, 50, 5);
-
                         startY += lineHeight;
-                        Debug.WriteLine($"[DEBUG] Next Y position: {startY}");
                     }
                 }
 
@@ -336,15 +340,16 @@ namespace SampleProgram
                 e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 
                 // Set draw area - adjust coordinates as needed with top offset
-                int x = 0;
-                int y = 20 + _topOffset;
-                int width = 80;
-                int height = 68;
+                int x = 10;
+                int y = 12 + _topOffset;
+                int width = 70;
+                int height = 60;
 
                 Debug.WriteLine($"[DEBUG] Drawing image at position: ({x}, {y}), Size: {width}x{height}mm");
 
                 // Download and draw image
                 DrawImageFromUrl(e.Graphics, imageUrl, x, y, width, height);
+                //(img, 10, 10 + _topOffset, 70, 64)
             }
             catch (Exception ex)
             {
